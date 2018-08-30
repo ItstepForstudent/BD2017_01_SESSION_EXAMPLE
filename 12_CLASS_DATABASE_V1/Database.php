@@ -45,17 +45,10 @@ class Database
 
     private function _insert($table,$data){
         $fields = array_keys($data);
-        $values = array_values($data);
-
-        $values = array_map(function ($elem){
-            return is_string($elem) ? $this->dbh->quote($elem) : $elem;
-        },$values);
-
         $query = "INSERT INTO `{$table}` (`"
-            .implode("`,`",$fields)."`) VALUES ("
-            .implode(",",$values).")";
-
-        $this->dbh->exec($query);
+            .implode("`,`",$fields)."`) VALUES (:"
+            .implode(",:",$fields).")";
+        $this->dbh->prepare($query)->execute($data);
         return $this->dbh->lastInsertId();
     }
 
@@ -69,7 +62,7 @@ class Database
 
 
 Database::instance()->users->insert([
-   "name"=>"vasia",
+   "name"=>"vasia5",
    "pass"=>"0000"
 ]);
 
